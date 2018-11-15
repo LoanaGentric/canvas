@@ -4,7 +4,7 @@ const context = $canvas.getContext('2d')
 // drawing hair
 
 const hair = {}
-    hair.xStart = 305 
+    hair.xStart = 300 
     hair.yStart = 150
     hair.xEnd = 95
     hair.yEnd = 150
@@ -149,3 +149,68 @@ context.bezierCurveTo( // courbes plus complexes
 
 context.fillStyle = '#be4362'
 context.fill()    
+
+
+//drawing eyes
+    //right eye
+context.beginPath()
+context.moveTo(225, 160)
+context.arc(225, 160, 6, 0, Math.PI * 2, false) 
+context.fillStyle = 'black'
+context.fill()
+
+    //left eye
+context.beginPath()
+context.moveTo(175, 160)
+context.arc(175, 160, 6, 0, Math.PI * 2, false) 
+context.fillStyle = 'black'
+context.fill()
+
+//drawing eyebrows
+    //left eyebrow
+context.beginPath()
+context.moveTo(160, 140) // coordonnées du départ de la courbe
+
+context.quadraticCurveTo( //avec un seul point de tention
+    175, 130, //coordonées du point de tention
+    190, 140
+)
+context.strokeStyle = 'black'
+context.lineWidth = 3
+context.lineCap = 'round'
+context.stroke()
+
+    //right eyebrow
+context.beginPath()
+context.moveTo(210, 140) // coordonnées du départ de la courbe
+
+context.quadraticCurveTo( //avec un seul point de tention
+    225, 130, //coordonées du point de tention
+    240, 140
+)
+context.strokeStyle = 'black'
+context.lineWidth = 3
+context.lineCap = 'round'
+context.stroke()
+
+//draw nose
+
+context.beginPath()
+context.moveTo(200, 190)
+
+context.bezierCurveTo( 
+    215, 200, 
+    185, 200, 
+    200, 190 
+)
+
+context.fillStyle = '#be4362'
+context.fill()
+
+//draw mouth
+
+let scaleRatio = 0.3
+
+context.beginPath()
+context.ellipse(200, 220, 20, 1, 0, 0, 2 * Math.PI, false);
+context.stroke()
