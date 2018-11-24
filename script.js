@@ -1,73 +1,81 @@
 const $canvas = document.querySelector('.js-canvas')
 const context = $canvas.getContext('2d')
 
-/* Resize */
 const sizes = { width: 800, height: 600 }
 
-const resize = () =>
+/**
+ * Mouth controler 
+ */
+
+let xMouthControler = 830
+let yMouthControler = 140
+let WIDTH = 250
+let HEIGHT = 80
+let dragok = false
+
+function rect(xMouthControler,yMouthControler,w,h) 
 {
-    sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
-
-    $canvas.width = sizes.width
-    $canvas.height = sizes.height
-
-    draw()
+ context.beginPath()
+ context.fillRect(xMouthControler,yMouthControler,w,h)
+ context.closePath()
+ context.fill()
 }
-window.addEventListener('resize', resize)
-resize()
 
-// drawing hair
-
-function draw()
+function clear() 
 {
-    const hair = {}
-    hair.xStart = sizes.width / 2 + 75 
-    hair.yStart = sizes.height / 2
-    hair.xEnd = sizes.width / 2 - 150
-    hair.yEnd = hair.yStart
-    hair.xFirstPoint = hair.xStart + 60
-    hair.yFirstPoint = hair.yStart + 330
-    hair.xSecondPoint = hair.xEnd - 60
-    hair.ySecondPoint = hair.yEnd + 330
+ context.clearRect(780, 100, WIDTH, HEIGHT)
+}
 
-    context.beginPath()
-    context.moveTo(hair.xStart, hair.yStart)
+function init() 
+{
+ return setInterval(drawControl, 10)
+}
 
-    context.bezierCurveTo(
+function drawControl() 
+{
+ clear()
+ context.fillStyle = "#FAF7F8"
+ context.fillRect(780, 100,WIDTH,HEIGHT)
+ context.fillStyle = "#444444"
+ rect(xMouthControler - 20, yMouthControler - 20, 40, 40)
 
-        hair.xFirstPoint, hair.yFirstPoint, 
-        hair.xSecondPoint, hair.ySecondPoint, 
-        hair.xEnd, hair.yEnd 
-    )
+ draw()
+}
 
-    context.fillStyle = '#be4362'
-    context.closePath()
-    context.fill()
+function myMove(e)
+{
+ if (dragok && 
+    e.pageX > 810 &&
+    e.pageY > 125 &&
+    e.pageX < 1000 &&
+    e.pageY < 160)
+ {
+  xMouthControler = e.pageX - $canvas.offsetLeft
+  y = e.pageY - $canvas.offsetTop
+ }
+}
 
-    const backHair = {}
-        backHair.xStart = sizes.width / 2 + 75 
-        backHair.yStart = sizes.height / 2 + 1
-        backHair.xEnd = sizes.width / 2 - 150
-        backHair.yEnd = backHair.yStart
-        backHair.xFirstPoint = backHair.xStart + 50
-        backHair.yFirstPoint = backHair.yStart - 220
-        backHair.xSecondPoint = backHair.xEnd - 50
-        backHair.ySecondPoint = backHair.yEnd - 220
+function myDown(e){
+ if (e.pageX < xMouthControler + 15 + $canvas.offsetLeft && e.pageX > xMouthControler - 15 +
+ $canvas.offsetLeft && e.pageY < yMouthControler + 15 + $canvas.offsetTop &&
+ e.pageY > yMouthControler -15 + $canvas.offsetTop){
+  xMouthControler = e.pageX - $canvas.offsetLeft
+  yMouthControler = e.pageY - $canvas.offsetTop
+  dragok = true
+  $canvas.onmousemove = myMove
+ }
+}
 
-    context.beginPath()
-    context.moveTo(backHair.xStart, backHair.yStart) 
+function myUp(){
+ dragok = false
+ $canvas.onmousemove = null
+}
 
-    context.bezierCurveTo( 
-        backHair.xFirstPoint, backHair.yFirstPoint, 
-        backHair.xSecondPoint, backHair.ySecondPoint, 
-        backHair.xEnd, backHair.yEnd 
-    )
 
-    context.fillStyle = '#be4362'
-    context.closePath()
-    context.fill()
 
+const draw = () =>
+{
+    
     //drawing ears 
 
         //left ear
@@ -83,8 +91,8 @@ function draw()
     context.beginPath()
     context.moveTo(leftEar.xStart, leftEar.yStart)
 
-    context.quadraticCurveTo( //avec un seul point de tention
-        leftEar.xTensionPoint, leftEar.yTensionPoint, //coordonées du point de tention
+    context.quadraticCurveTo( 
+        leftEar.xTensionPoint, leftEar.yTensionPoint, 
         leftEar.xEnd, leftEar.yEnd
     )
     context.fillStyle = '#CAA564'
@@ -115,6 +123,13 @@ function draw()
     context.fillStyle = '#f8ca76'
     context.fill()
 
+    //draw mouth
+    
+    let scaleRatio = (xMouthControler - 806) / 10
+    context.beginPath()
+    context.ellipse(sizes.width / 2 - 40, sizes.height / 2 + 50, 20, scaleRatio, 0, 0, 2 * Math.PI, false);
+    context.fillStyle = '#000000'
+    context.fill()
 
     //drawing fringe
         //left fringe
@@ -139,7 +154,7 @@ function draw()
         leftFringe.xEnd, leftFringe.yEnd 
     )
 
-    context.fillStyle = '#be4362'
+    context.fillStyle = '#361E1B'
     context.fill()
 
         //right fringe
@@ -163,22 +178,32 @@ function draw()
         rightFringe.xEnd, rightFringe.yEnd 
     )
 
-    context.fillStyle = '#be4362'
+    context.fillStyle = '#361E1B'
     context.fill()    
-
+    
+    
 
     //drawing eyes
-        //right eye
+
+    const rightEye = {}
+        rightEye.x = sizes.width / 2 - 10 
+        rightEye.y = sizes.height / 2 - 10
+
+    context.moveTo(rightEye.x, rightEye.y)
     context.beginPath()
-    context.moveTo(sizes.width / 2 - 10, sizes.height / 2)
-    context.arc(sizes.width / 2 - 10, sizes.height / 2, 6, 0, Math.PI * 2, false) 
+    context.ellipse(rightEye.x, rightEye.y, 6, 6, 0, 0, 2 * Math.PI, false) 
     context.fillStyle = 'black'
     context.fill()
 
         //left eye
+    const leftEye = {}
+        leftEye.x = sizes.width / 2 - 70
+        leftEye.y = sizes.height / 2 - 10
+        winkvalue = 6
+        console.log(winkvalue)
     context.beginPath()
-    context.moveTo(sizes.width / 2 - 70, sizes.height / 2)
-    context.arc(sizes.width / 2 - 70, sizes.height / 2, 6, 0, Math.PI * 2, false) 
+    context.moveTo(leftEye.x, leftEye.y)
+    context.ellipse(leftEye.x, leftEye.y, 6, winkvalue, 0, 0, 2 * Math.PI, false)
     context.fillStyle = 'black'
     context.fill()
 
@@ -229,7 +254,7 @@ function draw()
 
     const nose = {}
         nose.xStart = sizes.width / 2 - 40
-        nose.yStart = sizes.height / 2 + 20
+        nose.yStart = sizes.height / 2 + 15
         nose.xEnd = nose.xStart 
         nose.yEnd = nose.yStart
         nose.xFirstPoint = nose.xStart + 15
@@ -246,14 +271,85 @@ function draw()
         nose.xEnd, nose.yEnd 
     )
 
-    context.fillStyle = '#be4362'
+    context.fillStyle = '#361E1B'
     context.fill()
+}
 
-    //draw mouth
 
-    let scaleRatio = 0.3
+
+
+
+
+const drawHair = () =>
+{
+    const hair = {}
+        hair.xStart = sizes.width / 2 + 75 
+        hair.yStart = sizes.height / 2
+        hair.xEnd = sizes.width / 2 - 150
+        hair.yEnd = hair.yStart
+        hair.xFirstPoint = hair.xStart + 60
+        hair.yFirstPoint = hair.yStart + 330
+        hair.xSecondPoint = hair.xEnd - 60
+        hair.ySecondPoint = hair.yEnd + 330
 
     context.beginPath()
-    context.ellipse(sizes.width / 2 - 40, sizes.height / 2 + 50, 20, 1, 0, 0, 2 * Math.PI, false);
-    context.stroke()
+    context.moveTo(hair.xStart, hair.yStart)
+
+    context.bezierCurveTo(
+
+        hair.xFirstPoint, hair.yFirstPoint, 
+        hair.xSecondPoint, hair.ySecondPoint, 
+        hair.xEnd, hair.yEnd 
+    )
+
+    context.fillStyle = '#361E1B'
+    context.closePath()
+    context.fill()
+
+    const backHair = {}
+        backHair.xStart = sizes.width / 2 + 75 
+        backHair.yStart = sizes.height / 2 + 1
+        backHair.xEnd = sizes.width / 2 - 150
+        backHair.yEnd = backHair.yStart
+        backHair.xFirstPoint = backHair.xStart + 50
+        backHair.yFirstPoint = backHair.yStart - 220
+        backHair.xSecondPoint = backHair.xEnd - 50
+        backHair.ySecondPoint = backHair.yEnd - 220
+
+    context.beginPath()
+    context.moveTo(backHair.xStart, backHair.yStart) 
+
+    context.bezierCurveTo( 
+        backHair.xFirstPoint, backHair.yFirstPoint, 
+        backHair.xSecondPoint, backHair.ySecondPoint, 
+        backHair.xEnd, backHair.yEnd 
+    )
+
+    context.fillStyle = '#361E1B'
+    context.closePath()
+    context.fill()
 }
+
+
+
+
+/* Resize */
+
+const resize = () =>
+{
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+
+    $canvas.width = sizes.width
+    $canvas.height = sizes.height
+
+    draw()
+    drawHair()
+}
+window.addEventListener('resize', resize)
+resize()
+
+
+init()
+$canvas.onmousedown = myDown
+$canvas.onmouseup = myUp
