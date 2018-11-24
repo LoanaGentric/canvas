@@ -1,8 +1,88 @@
 const $canvas = document.querySelector('.js-canvas')
 const context = $canvas.getContext('2d')
 
-const sizes = { width: 800, height: 600 }
+const sizes = { width: window.innerWidth, height: window.innerHeight }
 
+/**
+ * snowflake particles
+ */
+
+let mp = 80 //max particles
+let particles = []
+for(let i = 0; i < mp; i++)
+{
+	particles.push({
+		x: Math.random()*sizes.width, //x-coordinate
+		y: Math.random()*sizes.height, //y-coordinate
+		r: Math.random()*4+1, //radius
+		d: Math.random()*mp //density
+	})
+}
+	
+//Lets draw the flakes
+function drawFlakes()
+{
+	context.clearRect(0, 0, sizes.width, sizes.height)
+	
+	context.fillStyle = "rgba(255, 255, 255, 0.8)"
+	context.beginPath()
+	for(let i = 0; i < mp; i++)
+	{
+		let p = particles[i]
+		context.moveTo(p.x, p.y)
+		context.arc(p.x, p.y, p.r, 0, Math.PI*2, true)
+	}
+	context.fill()
+    update()
+    
+    drawControl()
+    drawHair()
+    draw()
+    drawHat()
+}
+	
+//Function to move the snowflakes
+//angle will be an ongoing incremental flag. Sin and Cos functions will be applied to it to create vertical and horizontal movements of the flakes
+let angle = 0
+function update()
+{
+	angle += 0.01
+	for(let i = 0; i < mp; i++)
+	{
+		let p = particles[i];
+		//Updating X and Y coordinates
+		//We will add 1 to the cos function to prevent negative values which will lead flakes to move upwards
+		//Every particle has its own density which can be used to make the downward movement different for each flake
+		//Lets make it more random by adding in the radius
+		p.y += Math.cos(angle+p.d) + 1 + p.r/2
+		p.x += Math.sin(angle) * 2
+		
+		//Sending flakes back from the top when it exits
+		//Lets make it a bit more organic and let flakes enter from the left and right also.
+		if(p.x > sizes.width+5 || p.x < -5 || p.y > sizes.height)
+		{
+			if(i%3 > 0) //66.67% of the flakes
+			{
+				particles[i] = {x: Math.random()*sizes.height, y: -10, r: p.r, d: p.d}
+			}
+			else
+			{
+				//If the flake is exitting from the right
+				if(Math.sin(angle) > 0)
+				{
+					//Enter from the left
+					particles[i] = {x: -5, y: Math.random()*sizes.height, r: p.r, d: p.d}
+				}
+				else
+				{
+					//Enter from the right
+					particles[i] = {x: sizes.width+5, y: Math.random()*sizes.height, r: p.r, d: p.d}
+				}
+			}
+		}
+	}
+}
+	
 /**
  * Mouth controler 
  */
@@ -71,8 +151,9 @@ function myUp(){
  $canvas.onmousemove = null
 }
 
-context.fillRect(0,0,30,30)
-context.fillStyle = "red"
+/**
+ * Wink Controler
+ */
 
 let winkstatus = 6
     let down = false
@@ -98,6 +179,24 @@ window.addEventListener('mouseup', () =>
     winkstatus = 6
     console.log('false')
 })
+
+/**
+ * Christmas Controler
+ */
+const $audio = document.querySelector('audio')
+
+window.addEventListener('keydown', (event) => {
+    const keyName = event.keyCode
+    console.log('keydown event\n\n' + 'key: ' + keyName)
+
+    if(keyName == 32)
+    {
+        drawHat()
+        $audio.play()
+	    setInterval(drawFlakes, 10)
+    }
+})
+
 
 const draw = () =>
 {
@@ -351,6 +450,58 @@ const drawHair = () =>
     context.fill()
 }
 
+/**
+ * Draw Christmas hat
+ */
+
+const drawHat = () =>
+{
+    /**
+     * ponpon
+     */
+    context.beginPath()
+    context.arc(sizes.width / 2 - 180, sizes.height / 2 - 150, 20, 0, Math.PI * 2, false)
+    context.fillStyle = 'white'
+    context.fill()
+
+    /**
+     * red hat
+     */
+    context.beginPath()
+    context.moveTo(sizes.width / 2 - 40, sizes.height / 2 - 240)
+    context.bezierCurveTo( 
+        sizes.width / 2 - 200, sizes.height / 2 - 140,
+        sizes.width / 2 - 240, sizes.height / 2 - 140, 
+        sizes.width / 2 - 40, sizes.height / 2 - 150
+    )
+    context.fillStyle = '#600B09'
+    context.fill()
+
+    context.beginPath()
+    context.moveTo(sizes.width / 2 + 60, sizes.height / 2 - 120)
+
+    context.quadraticCurveTo(
+        sizes.width / 2 - 20, sizes.height / 2 - 400,
+        sizes.width / 2 - 140, sizes.height / 2 - 120,
+    )
+    context.fillStyle = '#8C150C'
+    context.fill()
+
+    
+
+    /**
+     * border
+     */
+
+    context.beginPath()
+    context.moveTo(sizes.width / 2 + 75, sizes.height / 2 - 120)
+    context.ellipse(sizes.width / 2 - 40, sizes.height / 2 - 115, 110, 20, 0, 0, 2 * Math.PI, false)
+    context.fillStyle = 'white'
+    context.fill()
+
+    
+}
+drawHat()
 
 /* Resize */
 
@@ -362,8 +513,11 @@ const resize = () =>
     $canvas.width = sizes.width
     $canvas.height = sizes.height
 
+    
     draw()
     drawHair()
+    // drawHat()
+   
 }
 window.addEventListener('resize', resize)
 resize()
@@ -372,3 +526,8 @@ resize()
 init()
 $canvas.onmousedown = myDown
 $canvas.onmouseup = myUp
+
+
+	
+	
+
