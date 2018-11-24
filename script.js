@@ -71,7 +71,33 @@ function myUp(){
  $canvas.onmousemove = null
 }
 
+context.fillRect(0,0,30,30)
+context.fillStyle = "red"
 
+let winkstatus = 6
+    let down = false
+
+window.addEventListener('mousedown', (e) =>
+{
+    if(
+        e.clientX > 880 &&
+        e.clientY > 250 &&
+        e.clientX < 910 &&
+        e.clientY < 280
+    )
+    {
+        down = true
+        winkstatus = 1
+        console.log('true')
+    }
+})
+
+window.addEventListener('mouseup', () =>
+{
+    down = false
+    winkstatus = 6
+    console.log('false')
+})
 
 const draw = () =>
 {
@@ -181,17 +207,16 @@ const draw = () =>
     context.fillStyle = '#361E1B'
     context.fill()    
     
-    
-
     //drawing eyes
 
     const rightEye = {}
         rightEye.x = sizes.width / 2 - 10 
         rightEye.y = sizes.height / 2 - 10
 
+    
     context.moveTo(rightEye.x, rightEye.y)
     context.beginPath()
-    context.ellipse(rightEye.x, rightEye.y, 6, 6, 0, 0, 2 * Math.PI, false) 
+    context.ellipse(rightEye.x, rightEye.y, 6, winkstatus, 0, 0, 2 * Math.PI, false) 
     context.fillStyle = 'black'
     context.fill()
 
@@ -199,11 +224,10 @@ const draw = () =>
     const leftEye = {}
         leftEye.x = sizes.width / 2 - 70
         leftEye.y = sizes.height / 2 - 10
-        winkvalue = 6
-        console.log(winkvalue)
+        console.log(winkstatus)
     context.beginPath()
     context.moveTo(leftEye.x, leftEye.y)
-    context.ellipse(leftEye.x, leftEye.y, 6, winkvalue, 0, 0, 2 * Math.PI, false)
+    context.ellipse(leftEye.x, leftEye.y, 6, 6, 0, 0, 2 * Math.PI, false)
     context.fillStyle = 'black'
     context.fill()
 
@@ -277,9 +301,6 @@ const draw = () =>
 
 
 
-
-
-
 const drawHair = () =>
 {
     const hair = {}
@@ -329,8 +350,6 @@ const drawHair = () =>
     context.closePath()
     context.fill()
 }
-
-
 
 
 /* Resize */

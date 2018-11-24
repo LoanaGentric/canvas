@@ -38,3 +38,12 @@ h2.wink
     top: 200px;
     left: 880px;
 }
+
+.wink-button{
+    position: absolute;
+    top: 250px;
+    left: 880px;
+    width: 30px;
+    height: 30px;
+    background: #000000;
+}
