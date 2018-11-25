@@ -7,23 +7,27 @@ const sizes = { width: window.innerWidth, height: window.innerHeight }
  * snowflake particles
  */
 
-let mp = 80 //max particles
+let mp = 80 
 let particles = []
 for(let i = 0; i < mp; i++)
 {
 	particles.push({
-		x: Math.random()*sizes.width, //x-coordinate
-		y: Math.random()*sizes.height, //y-coordinate
-		r: Math.random()*4+1, //radius
-		d: Math.random()*mp //density
+		x: Math.random()*sizes.width,
+		y: Math.random()*sizes.height, 
+		r: Math.random()*4+1, 
+		d: Math.random()*mp 
 	})
 }
 	
-//Lets draw the flakes
+//draw flakes
 function drawFlakes()
 {
+    
 	context.clearRect(0, 0, sizes.width, sizes.height)
-	
+	drawControl()
+    drawHair()
+    draw()
+    drawChristmas()
 	context.fillStyle = "rgba(255, 255, 255, 0.8)"
 	context.beginPath()
 	for(let i = 0; i < mp; i++)
@@ -34,15 +38,9 @@ function drawFlakes()
 	}
 	context.fill()
     update()
-    
-    drawControl()
-    drawHair()
-    draw()
-    drawHat()
+
 }
 	
-//Function to move the snowflakes
-//angle will be an ongoing incremental flag. Sin and Cos functions will be applied to it to create vertical and horizontal movements of the flakes
 let angle = 0
 function update()
 {
@@ -50,32 +48,24 @@ function update()
 	for(let i = 0; i < mp; i++)
 	{
 		let p = particles[i];
-		//Updating X and Y coordinates
-		//We will add 1 to the cos function to prevent negative values which will lead flakes to move upwards
-		//Every particle has its own density which can be used to make the downward movement different for each flake
-		//Lets make it more random by adding in the radius
+
 		p.y += Math.cos(angle+p.d) + 1 + p.r/2
 		p.x += Math.sin(angle) * 2
-		
-		//Sending flakes back from the top when it exits
-		//Lets make it a bit more organic and let flakes enter from the left and right also.
+
 		if(p.x > sizes.width+5 || p.x < -5 || p.y > sizes.height)
 		{
-			if(i%3 > 0) //66.67% of the flakes
+			if(i%3 > 0) 
 			{
 				particles[i] = {x: Math.random()*sizes.height, y: -10, r: p.r, d: p.d}
 			}
 			else
 			{
-				//If the flake is exitting from the right
 				if(Math.sin(angle) > 0)
 				{
-					//Enter from the left
 					particles[i] = {x: -5, y: Math.random()*sizes.height, r: p.r, d: p.d}
 				}
 				else
 				{
-					//Enter from the right
 					particles[i] = {x: sizes.width+5, y: Math.random()*sizes.height, r: p.r, d: p.d}
 				}
 			}
@@ -151,26 +141,22 @@ function myUp(){
  $canvas.onmousemove = null
 }
 
+
+
 /**
  * Wink Controler
  */
 
+let $winkButton = document.querySelector('.wink-button')
 let winkstatus = 6
-    let down = false
+let down = false
 
-window.addEventListener('mousedown', (e) =>
+$winkButton.addEventListener('mousedown', (e) =>
 {
-    if(
-        e.clientX > 880 &&
-        e.clientY > 250 &&
-        e.clientX < 910 &&
-        e.clientY < 280
-    )
-    {
-        down = true
-        winkstatus = 1
-        console.log('true')
-    }
+
+    down = true
+    winkstatus = 1
+    console.log('true')
 })
 
 window.addEventListener('mouseup', () =>
@@ -184,18 +170,42 @@ window.addEventListener('mouseup', () =>
  * Christmas Controler
  */
 const $audio = document.querySelector('audio')
+let playState = false
 
-window.addEventListener('keydown', (event) => {
+window.addEventListener('keydown', (event) => 
+{
+    const keyName = event.keyCode
+    // console.log('keydown event\n\n' + 'key: ' + keyName)
+
+    if(keyName == 32 && playState == false)
+    {
+        drawChristmas()
+        $audio.play()
+        playState = true
+    } 
+
+    else if(keyName == 32 && playState)
+    {
+        $audio.pause()
+        playState = false
+        console.log('pause')
+    }
+})
+
+let flakesState = false
+
+window.addEventListener('keydown', (event) => 
+{
     const keyName = event.keyCode
     console.log('keydown event\n\n' + 'key: ' + keyName)
 
-    if(keyName == 32)
+    if( keyName == 13 && flakesState == false)
     {
-        drawHat()
-        $audio.play()
-	    setInterval(drawFlakes, 10)
+        flakesState = true
+        setInterval(drawFlakes, 10)
     }
 })
+
 
 
 const draw = () =>
@@ -323,7 +333,6 @@ const draw = () =>
     const leftEye = {}
         leftEye.x = sizes.width / 2 - 70
         leftEye.y = sizes.height / 2 - 10
-        console.log(winkstatus)
     context.beginPath()
     context.moveTo(leftEye.x, leftEye.y)
     context.ellipse(leftEye.x, leftEye.y, 6, 6, 0, 0, 2 * Math.PI, false)
@@ -396,6 +405,7 @@ const draw = () =>
 
     context.fillStyle = '#361E1B'
     context.fill()
+
 }
 
 
@@ -451,10 +461,10 @@ const drawHair = () =>
 }
 
 /**
- * Draw Christmas hat
+ * Draw Christmas features
  */
 
-const drawHat = () =>
+const drawChristmas = () =>
 {
     /**
      * ponpon
@@ -487,8 +497,6 @@ const drawHat = () =>
     context.fillStyle = '#8C150C'
     context.fill()
 
-    
-
     /**
      * border
      */
@@ -499,9 +507,126 @@ const drawHat = () =>
     context.fillStyle = 'white'
     context.fill()
 
+    /**
+     * draw christmas tree
+     */
+
+    context.beginPath()
+    context.moveTo(100,400)
+    context.lineTo(150, 300)
+    context.lineTo(200, 400)
+    context.fillStyle = '#112B11'
+    context.fill()
+
+    context.beginPath()
+    context.moveTo(70,500)
+    context.lineTo(150, 320)
+    context.lineTo(230, 500)
+    context.fillStyle = '#112B11'
+    context.fill()
+
+    context.beginPath()
+    context.moveTo(50,600)
+    context.lineTo(150, 380)
+    context.lineTo(250, 600)
+    context.fillStyle = '#112B11'
+    context.fill()
+
+    context.beginPath()
+    context.rect(135,600,30,100)
+    context.fillStyle = '#261514'
+    context.fill()
+
+        /**
+     * draw christmas tree
+     */
+
+    context.beginPath()
+    context.moveTo(200,400)
+    context.lineTo(250, 300)
+    context.lineTo(300, 400)
+    context.fillStyle = '#173D18'
+    context.fill()
+
+    context.beginPath()
+    context.moveTo(170,500)
+    context.lineTo(250, 320)
+    context.lineTo(330, 500)
+    context.fillStyle = '#173D18'
+    context.fill()
+
+    context.beginPath()
+    context.moveTo(150,600)
+    context.lineTo(250, 380)
+    context.lineTo(350, 600)
+    context.fillStyle = '#173D18'
+    context.fill()
+
+    context.beginPath()
+    context.rect(235,600,30,100)
+    context.fillStyle = '#361E1B'
+    context.fill()
+
     
+
+    /**
+     * draw christmas festoon
+     */
+    context.beginPath()
+    context.arc(150,360,10,0,Math.PI * 2, false)
+    context.fillStyle = 'pink'
+    context.fill()
+
+    context.beginPath()
+    context.arc(160,410,5,0,Math.PI * 2, false)
+    context.fillStyle = 'red'
+    context.fill()
+
+    context.beginPath()
+    context.arc(120,450,10,0,Math.PI * 2, false)
+    context.fillStyle = 'yellow'
+    context.fill()
+
+    context.beginPath()
+    context.arc(115,520,5,0,Math.PI * 2, false)
+    context.fillStyle = 'blue'
+    context.fill()
+
+    /**
+     * draw christmas festoon
+     */
+    context.beginPath()
+    context.arc(250,360,5,0,Math.PI * 2, false)
+    context.fillStyle = 'red'
+    context.fill()
+
+    context.beginPath()
+    context.arc(260,410,10,0,Math.PI * 2, false)
+    context.fillStyle = 'blue'
+    context.fill()
+
+    context.beginPath()
+    context.arc(220,450,5,0,Math.PI * 2, false)
+    context.fillStyle = 'red'
+    context.fill()
+
+    context.beginPath()
+    context.arc(215,520,10,0,Math.PI * 2, false)
+    context.fillStyle = 'yellow'
+    context.fill()
+
+    context.beginPath()
+    context.arc(265,570,10,0,Math.PI * 2, false)
+    context.fillStyle = 'blue'
+    context.fill()
+
+    context.beginPath()
+    context.arc(265,490,5,0,Math.PI * 2, false)
+    context.fillStyle = 'pink'
+    context.fill()
+
 }
-drawHat()
+
 
 /* Resize */
 
@@ -512,22 +637,14 @@ const resize = () =>
 
     $canvas.width = sizes.width
     $canvas.height = sizes.height
-
-    
+  
     draw()
     drawHair()
-    // drawHat()
-   
 }
+
 window.addEventListener('resize', resize)
 resize()
-
 
 init()
 $canvas.onmousedown = myDown
 $canvas.onmouseup = myUp
-
-
-	
-	
-
