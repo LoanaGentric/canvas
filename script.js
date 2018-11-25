@@ -1,10 +1,14 @@
 const $canvas = document.querySelector('.js-canvas')
 const context = $canvas.getContext('2d')
 
-const sizes = { width: window.innerWidth, height: window.innerHeight }
+const sizes = 
+{ 
+    width: window.innerWidth, 
+    height: window.innerHeight 
+}
 
 /**
- * snowflake particles
+ * Snowflake particles
  */
 
 let mp = 80 
@@ -19,14 +23,17 @@ for(let i = 0; i < mp; i++)
 	})
 }
 	
-//draw flakes
+/**
+ * Draw flakes
+ */
+
 function drawFlakes()
 {
     
 	context.clearRect(0, 0, sizes.width, sizes.height)
 	drawControl()
     drawHair()
-    draw()
+    drawFace()
     drawChristmas()
 	context.fillStyle = "rgba(255, 255, 255, 0.8)"
 	context.beginPath()
@@ -40,7 +47,11 @@ function drawFlakes()
     update()
 
 }
-	
+
+/**
+ * Make flakes move
+ */
+
 let angle = 0
 function update()
 {
@@ -79,61 +90,65 @@ function update()
 
 let xMouthControler = 830
 let yMouthControler = 140
-let WIDTH = 250
-let HEIGHT = 80
+let widthMouthControler = 250
+let heightMouthControler = 80
 let dragok = false
 
 function rect(xMouthControler,yMouthControler,w,h) 
 {
- context.beginPath()
- context.fillRect(xMouthControler,yMouthControler,w,h)
- context.closePath()
- context.fill()
+    context.beginPath()
+    context.fillRect(xMouthControler,yMouthControler,w,h)
+    context.closePath()
+    context.fill()
 }
 
 function clear() 
 {
- context.clearRect(780, 100, WIDTH, HEIGHT)
+    context.clearRect(780, 100, widthMouthControler, heightMouthControler)
 }
 
 function init() 
 {
- return setInterval(drawControl, 10)
+    return setInterval(drawControl, 10)
 }
 
 function drawControl() 
 {
- clear()
- context.fillStyle = "#FAF7F8"
- context.fillRect(780, 100,WIDTH,HEIGHT)
- context.fillStyle = "#444444"
- rect(xMouthControler - 20, yMouthControler - 20, 40, 40)
+    clear()
 
- draw()
+    context.fillStyle = "#FAF7F8"
+    context.fillRect(780, 100,widthMouthControler,heightMouthControler)
+    context.fillStyle = "#444444"
+    rect(xMouthControler - 20, yMouthControler - 20, 40, 40)
+
+    drawFace()
 }
 
 function myMove(e)
 {
- if (dragok && 
+    if (dragok && 
     e.pageX > 810 &&
     e.pageY > 125 &&
     e.pageX < 1000 &&
     e.pageY < 160)
- {
-  xMouthControler = e.pageX - $canvas.offsetLeft
-  y = e.pageY - $canvas.offsetTop
- }
+    {
+        xMouthControler = e.pageX - $canvas.offsetLeft
+        y = e.pageY - $canvas.offsetTop
+    }
 }
 
-function myDown(e){
- if (e.pageX < xMouthControler + 15 + $canvas.offsetLeft && e.pageX > xMouthControler - 15 +
- $canvas.offsetLeft && e.pageY < yMouthControler + 15 + $canvas.offsetTop &&
- e.pageY > yMouthControler -15 + $canvas.offsetTop){
-  xMouthControler = e.pageX - $canvas.offsetLeft
-  yMouthControler = e.pageY - $canvas.offsetTop
-  dragok = true
-  $canvas.onmousemove = myMove
- }
+function myDown(e)
+{
+    if (e.pageX < xMouthControler + 15 + $canvas.offsetLeft && 
+    e.pageX > xMouthControler - 15 + $canvas.offsetLeft && 
+    e.pageY < yMouthControler + 15 + $canvas.offsetTop &&
+    e.pageY > yMouthControler -15 + $canvas.offsetTop)
+    {
+        xMouthControler = e.pageX - $canvas.offsetLeft
+        yMouthControler = e.pageY - $canvas.offsetTop
+        dragok = true
+        $canvas.onmousemove = myMove
+    }
 }
 
 function myUp(){
@@ -142,10 +157,10 @@ function myUp(){
 }
 
 
-
 /**
  * Wink Controler
  */
+
 
 let $winkButton = document.querySelector('.wink-button')
 let winkstatus = 6
@@ -153,29 +168,28 @@ let down = false
 
 $winkButton.addEventListener('mousedown', (e) =>
 {
-
     down = true
     winkstatus = 1
-    console.log('true')
 })
 
 window.addEventListener('mouseup', () =>
 {
     down = false
     winkstatus = 6
-    console.log('false')
 })
+
 
 /**
  * Christmas Controler
  */
+
+
 const $audio = document.querySelector('audio')
 let playState = false
 
-window.addEventListener('keydown', (event) => 
+window.addEventListener('keydown', (_event) => 
 {
-    const keyName = event.keyCode
-    // console.log('keydown event\n\n' + 'key: ' + keyName)
+    const keyName = _event.keyCode
 
     if(keyName == 32 && playState == false)
     {
@@ -188,16 +202,14 @@ window.addEventListener('keydown', (event) =>
     {
         $audio.pause()
         playState = false
-        console.log('pause')
     }
 })
 
 let flakesState = false
 
-window.addEventListener('keydown', (event) => 
+window.addEventListener('keydown', (_event) => 
 {
-    const keyName = event.keyCode
-    console.log('keydown event\n\n' + 'key: ' + keyName)
+    const keyName = _event.keyCode
 
     if( keyName == 13 && flakesState == false)
     {
@@ -206,14 +218,14 @@ window.addEventListener('keydown', (event) =>
     }
 })
 
+/**
+ * draw face
+ */
 
-
-const draw = () =>
+const drawFace = () =>
 {
     
-    //drawing ears 
-
-        //left ear
+    //drawing ear
 
     const leftEar = {}
         leftEar.xStart = sizes.width / 2 - 115
@@ -226,12 +238,14 @@ const draw = () =>
     context.beginPath()
     context.moveTo(leftEar.xStart, leftEar.yStart)
 
-    context.quadraticCurveTo( 
+    context.quadraticCurveTo
+    ( 
         leftEar.xTensionPoint, leftEar.yTensionPoint, 
         leftEar.xEnd, leftEar.yEnd
     )
     context.fillStyle = '#CAA564'
     context.fill()
+
 
     //drawing face
 
@@ -248,8 +262,8 @@ const draw = () =>
     context.beginPath()
     context.moveTo(face.xStart, face.yStart)
 
-    context.bezierCurveTo(
-
+    context.bezierCurveTo
+    (
         face.xFirstPoint, face.yFirstPoint, 
         face.xSecondPoint, face.ySecondPoint, 
         face.xEnd, face.yEnd 
@@ -258,15 +272,19 @@ const draw = () =>
     context.fillStyle = '#f8ca76'
     context.fill()
 
+
     //draw mouth
     
     let scaleRatio = (xMouthControler - 806) / 10
+
     context.beginPath()
     context.ellipse(sizes.width / 2 - 40, sizes.height / 2 + 50, 20, scaleRatio, 0, 0, 2 * Math.PI, false);
     context.fillStyle = '#000000'
     context.fill()
 
+
     //drawing fringe
+
         //left fringe
 
     const leftFringe = {}
@@ -282,8 +300,8 @@ const draw = () =>
     context.beginPath()
     context.moveTo(leftFringe.xStart, leftFringe.yStart)
 
-    context.bezierCurveTo( 
-
+    context.bezierCurveTo
+    ( 
         leftFringe.xFirstPoint, leftFringe.yFirstPoint, 
         leftFringe.xSecondPoint, leftFringe.ySecondPoint, 
         leftFringe.xEnd, leftFringe.yEnd 
@@ -291,6 +309,7 @@ const draw = () =>
 
     context.fillStyle = '#361E1B'
     context.fill()
+
 
         //right fringe
 
@@ -307,7 +326,8 @@ const draw = () =>
     context.beginPath()
     context.moveTo(rightFringe.xStart, rightFringe.yStart)
 
-    context.bezierCurveTo( 
+    context.bezierCurveTo
+    ( 
         rightFringe.xFirstPoint, rightFringe.yFirstPoint, 
         rightFringe.xSecondPoint, rightFringe.ySecondPoint, 
         rightFringe.xEnd, rightFringe.yEnd 
@@ -316,20 +336,23 @@ const draw = () =>
     context.fillStyle = '#361E1B'
     context.fill()    
     
+
     //drawing eyes
+        //right eye
 
     const rightEye = {}
         rightEye.x = sizes.width / 2 - 10 
         rightEye.y = sizes.height / 2 - 10
 
-    
     context.moveTo(rightEye.x, rightEye.y)
     context.beginPath()
     context.ellipse(rightEye.x, rightEye.y, 6, winkstatus, 0, 0, 2 * Math.PI, false) 
     context.fillStyle = 'black'
     context.fill()
 
+
         //left eye
+
     const leftEye = {}
         leftEye.x = sizes.width / 2 - 70
         leftEye.y = sizes.height / 2 - 10
@@ -339,8 +362,10 @@ const draw = () =>
     context.fillStyle = 'black'
     context.fill()
 
+
     //drawing eyebrows
         //left eyebrow
+
     const leftEyebrow = {}
         leftEyebrow.xStart = sizes.width / 2 - 25
         leftEyebrow.yStart = sizes.height / 2 - 30
@@ -352,7 +377,8 @@ const draw = () =>
     context.beginPath()
     context.moveTo(leftEyebrow.xStart, leftEyebrow.yStart) 
 
-    context.quadraticCurveTo( 
+    context.quadraticCurveTo
+    ( 
         leftEyebrow.xTensionPoint, leftEyebrow.yTensionPoint, 
         leftEyebrow.xEnd, leftEyebrow.yEnd
     )
@@ -361,7 +387,9 @@ const draw = () =>
     context.lineCap = 'round'
     context.stroke()
 
+
         //right eyebrow
+
     const rightEyebrow = {}
         rightEyebrow.xStart = sizes.width / 2 - 85
         rightEyebrow.yStart = sizes.height / 2 - 30
@@ -373,7 +401,8 @@ const draw = () =>
     context.beginPath()
     context.moveTo(rightEyebrow.xStart, rightEyebrow.yStart) 
 
-    context.quadraticCurveTo( 
+    context.quadraticCurveTo
+    ( 
         rightEyebrow.xTensionPoint, rightEyebrow.yTensionPoint, 
         rightEyebrow.xEnd, rightEyebrow.yEnd
     )
@@ -397,7 +426,8 @@ const draw = () =>
     context.beginPath()
     context.moveTo(nose.xStart, nose.yStart)
 
-    context.bezierCurveTo( 
+    context.bezierCurveTo
+    ( 
         nose.xFirstPoint, nose.yFirstPoint, 
         nose.xSecondPoint, nose.ySecondPoint, 
         nose.xEnd, nose.yEnd 
@@ -408,10 +438,15 @@ const draw = () =>
 
 }
 
-
+/**
+ * draw hair
+ */
 
 const drawHair = () =>
 {
+
+    // draw down part of hair
+
     const hair = {}
         hair.xStart = sizes.width / 2 + 75 
         hair.yStart = sizes.height / 2
@@ -426,7 +461,6 @@ const drawHair = () =>
     context.moveTo(hair.xStart, hair.yStart)
 
     context.bezierCurveTo(
-
         hair.xFirstPoint, hair.yFirstPoint, 
         hair.xSecondPoint, hair.ySecondPoint, 
         hair.xEnd, hair.yEnd 
@@ -435,6 +469,8 @@ const drawHair = () =>
     context.fillStyle = '#361E1B'
     context.closePath()
     context.fill()
+
+    // draw up part of hair (backHair)
 
     const backHair = {}
         backHair.xStart = sizes.width / 2 + 75 
@@ -449,7 +485,8 @@ const drawHair = () =>
     context.beginPath()
     context.moveTo(backHair.xStart, backHair.yStart) 
 
-    context.bezierCurveTo( 
+    context.bezierCurveTo
+    ( 
         backHair.xFirstPoint, backHair.yFirstPoint, 
         backHair.xSecondPoint, backHair.ySecondPoint, 
         backHair.xEnd, backHair.yEnd 
@@ -466,17 +503,17 @@ const drawHair = () =>
 
 const drawChristmas = () =>
 {
-    /**
-     * ponpon
-     */
+
+    // draw ponpon
+
     context.beginPath()
     context.arc(sizes.width / 2 - 180, sizes.height / 2 - 150, 20, 0, Math.PI * 2, false)
     context.fillStyle = 'white'
     context.fill()
 
-    /**
-     * red hat
-     */
+
+    // draw red christmas hat
+
     context.beginPath()
     context.moveTo(sizes.width / 2 - 40, sizes.height / 2 - 240)
     context.bezierCurveTo( 
@@ -497,9 +534,7 @@ const drawChristmas = () =>
     context.fillStyle = '#8C150C'
     context.fill()
 
-    /**
-     * border
-     */
+    // draw border the hat
 
     context.beginPath()
     context.moveTo(sizes.width / 2 + 75, sizes.height / 2 - 120)
@@ -507,9 +542,7 @@ const drawChristmas = () =>
     context.fillStyle = 'white'
     context.fill()
 
-    /**
-     * draw christmas tree
-     */
+    // draw christmas tree in the second plan
 
     context.beginPath()
     context.moveTo(100,400)
@@ -537,9 +570,8 @@ const drawChristmas = () =>
     context.fillStyle = '#261514'
     context.fill()
 
-        /**
-     * draw christmas tree
-     */
+
+    // draw christmas tree in the first plan 
 
     context.beginPath()
     context.moveTo(200,400)
@@ -567,11 +599,10 @@ const drawChristmas = () =>
     context.fillStyle = '#361E1B'
     context.fill()
 
-    
 
-    /**
-     * draw christmas festoon
-     */
+    // draw christmas festoons/lights in the trees 
+    // because it's more joyful that way.
+
     context.beginPath()
     context.arc(150,360,10,0,Math.PI * 2, false)
     context.fillStyle = 'pink'
@@ -592,9 +623,6 @@ const drawChristmas = () =>
     context.fillStyle = 'blue'
     context.fill()
 
-    /**
-     * draw christmas festoon
-     */
     context.beginPath()
     context.arc(250,360,5,0,Math.PI * 2, false)
     context.fillStyle = 'red'
@@ -628,7 +656,9 @@ const drawChristmas = () =>
 }
 
 
-/* Resize */
+/**
+ *  Resize 
+**/
 
 const resize = () =>
 {
@@ -638,13 +668,12 @@ const resize = () =>
     $canvas.width = sizes.width
     $canvas.height = sizes.height
   
-    draw()
+    drawFace()
     drawHair()
 }
 
 window.addEventListener('resize', resize)
 resize()
-
 init()
 $canvas.onmousedown = myDown
 $canvas.onmouseup = myUp
